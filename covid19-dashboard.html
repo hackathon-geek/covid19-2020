@@ -3,16 +3,8 @@
   <head>
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="sample-response.js"></script>
+    <script src="https://storage.googleapis.com/covid19-chromecast-data/data.js"></script>
     <script type="text/javascript">
-      // Load the Visualization API and the corechart package.
-      google.charts.load('current', {
-        'packages': ['corechart']
-      });
-
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.charts.setOnLoadCallback(drawChart);
-
       // Callback that creates and populates a data table,
       // instantiates the chart, passes in the data and
       // draws it.
@@ -23,11 +15,11 @@
         data.addColumn('number', 'Active Cases');
         data.addColumn('number', 'Critical Cases');
         data.addColumn('number', 'Recovered Cases');
-        data.addRows(formatDataSet(apiResponse));
+        data.addRows(formatDataSet(covid19data));
 
         // Set chart options
         var options = {
-          title: `COVID19 cases in ${apiResponse.parameters.country.toUpperCase()}`,
+          title: `COVID19 cases in ${covid19data.parameters.country.toUpperCase()}`,
           hAxis: {
             title: 'Time',
             gridlines: {
@@ -47,8 +39,8 @@
           legend: {
             position: 'bottom'
           },
-          // width: 900,
-          // height: 500,
+          width: 900,
+          height: 500,
           chartArea: {
             width: '75%',
             height: '75%'
@@ -68,10 +60,11 @@
         chart.draw(data, options);
       }
 
-      var formatDataSet = function (jsonInAPIFormat) {
+      function formatDataSet(jsonInAPIFormat) {
 
         var jsonInChartsFormat = [];
         const items = jsonInAPIFormat.response;
+        if (!items.length) return [];
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
           jsonInChartsFormat.push([
@@ -83,6 +76,14 @@
         }
         return jsonInChartsFormat;
       }
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {
+        'packages': ['corechart']
+      });
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
     </script>
   </head>
 
